@@ -91,7 +91,7 @@ export default function TaxCalculator() {
           Calculate Tax
         </button>
         <p className="mt-2 text-sm text-center text-gray-700 bg-sky-100 p-2 rounded-lg shadow-md border border-sky-300">
-          <strong>Note:</strong> Tax payable may vary depending on the exemptions allowed as per the tax act.
+          <strong>Note:</strong> Tax payable may vary depending on the exemptions allowed as per the tax act.and also please enter salary income 1360000 or above
         </p>
         <h2 className="text-3xl font-semibold text-center mt-6 text-sky-700">Tax Payable: ₹{tax.toFixed(2)}</h2>
         {details && (
