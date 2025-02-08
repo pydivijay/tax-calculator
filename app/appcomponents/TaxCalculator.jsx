@@ -44,8 +44,20 @@ export default function TaxCalculator() {
       computedTax += amount * 0.10;
     }
     if (taxableIncome > 1200000) {
-      const amount = taxableIncome - 1200000;
+      const amount = Math.min(taxableIncome, 1600000) - 1200000;
       computedTax += amount * 0.15;
+    }
+    if (taxableIncome > 1600000) {
+      const amount = Math.min(taxableIncome, 2000000) - 1600000;
+      computedTax += amount * 0.20;
+    }
+    if (taxableIncome > 2000000) {
+      const amount = Math.min(taxableIncome, 2400000) - 2000000;
+      computedTax += amount * 0.25;
+    }
+    if (taxableIncome > 2400000) {
+      const amount = taxableIncome - 2400000;
+      computedTax += amount * 0.30;
     }
 
     let finalTaxBeforeCess = 0;
