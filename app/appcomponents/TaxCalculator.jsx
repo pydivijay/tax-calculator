@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 export default function TaxCalculator() {
   const [income, setIncome] = useState({
@@ -41,7 +42,7 @@ export default function TaxCalculator() {
     }
     if (taxableIncome > 800000) {
       const amount = Math.min(taxableIncome, 1200000) - 800000;
-      computedTax += amount * 0.10;
+      computedTax += amount * 0.1;
     }
     if (taxableIncome > 1200000) {
       const amount = Math.min(taxableIncome, 1600000) - 1200000;
@@ -49,7 +50,7 @@ export default function TaxCalculator() {
     }
     if (taxableIncome > 1600000) {
       const amount = Math.min(taxableIncome, 2000000) - 1600000;
-      computedTax += amount * 0.20;
+      computedTax += amount * 0.2;
     }
     if (taxableIncome > 2000000) {
       const amount = Math.min(taxableIncome, 2400000) - 2000000;
@@ -57,7 +58,7 @@ export default function TaxCalculator() {
     }
     if (taxableIncome > 2400000) {
       const amount = taxableIncome - 2400000;
-      computedTax += amount * 0.30;
+      computedTax += amount * 0.3;
     }
 
     let finalTaxBeforeCess = 0;
@@ -87,6 +88,15 @@ export default function TaxCalculator() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-r from-sky-300 to-sky-700 text-white">
       <div className="bg-white shadow-2xl rounded-lg p-8 w-full max-w-2xl border border-gray-300 text-gray-800">
+      <div className="flex justify-center">
+          <Image
+            src="/VijayLogo.jpg"
+            alt="Vijay Kumar Pydi Logo"
+            width={100}
+            height={100}
+            className="rounded-full"
+          />
+        </div>
         <h1 className="text-4xl font-bold text-center mb-6 text-sky-700">
           New Tax Regime Calculator
         </h1>
@@ -114,8 +124,9 @@ export default function TaxCalculator() {
           Calculate Tax
         </button>
         <p className="mt-2 text-sm text-center text-gray-700 bg-sky-100 p-2 rounded-lg shadow-md border border-sky-300">
-          <strong>Note:</strong> Tax payable may vary depending on the exemptions allowed as per the tax act.
-          (For testing marginal relief, please enter a salary income of ₹1,276,000 or above.)
+          <strong>Note:</strong> Tax payable may vary depending on the
+          exemptions allowed as per the tax act. (For testing marginal relief,
+          please enter a salary income of ₹1,276,000 or above.)
         </p>
         <h2 className="text-3xl font-semibold text-center mt-6 text-sky-700">
           Tax Payable: ₹{tax.toFixed(2)}
@@ -126,13 +137,24 @@ export default function TaxCalculator() {
               Calculation Summary
             </h3>
             <div className="grid grid-cols-2 gap-4 text-gray-800">
-              <p className="font-medium">Total Income:</p> <p>₹{details.totalIncome}</p>
-              <p className="font-medium">Standard Deductions:</p> <p>₹{details.standardDeductions}</p>
-              <p className="font-medium">Taxable Income:</p> <p>₹{details.taxableIncome}</p>
-              <p className="font-medium">Computed Tax (Without Relief):</p> <p>₹{details.computedTax}</p>
-              <p className="font-medium">Tax Before Cess (After Marginal Relief):</p> <p>₹{details.finalTaxBeforeCess}</p>
-              <p className="font-medium">Health & Education Cess:</p> <p>₹{details.cess}</p>
-              <p className="font-medium">Tax Payable (With Cess):</p> <p className="text-red-500 font-semibold">₹{details.taxPayable}</p>
+              <p className="font-medium">Total Income:</p>{" "}
+              <p>₹{details.totalIncome}</p>
+              <p className="font-medium">Standard Deductions:</p>{" "}
+              <p>₹{details.standardDeductions}</p>
+              <p className="font-medium">Taxable Income:</p>{" "}
+              <p>₹{details.taxableIncome}</p>
+              <p className="font-medium">Computed Tax (Without Relief):</p>{" "}
+              <p>₹{details.computedTax}</p>
+              <p className="font-medium">
+                Tax Before Cess (After Marginal Relief):
+              </p>{" "}
+              <p>₹{details.finalTaxBeforeCess}</p>
+              <p className="font-medium">Health & Education Cess:</p>{" "}
+              <p>₹{details.cess}</p>
+              <p className="font-medium">Tax Payable (With Cess):</p>{" "}
+              <p className="text-red-500 font-semibold">
+                ₹{details.taxPayable}
+              </p>
             </div>
           </div>
         )}
@@ -140,4 +162,3 @@ export default function TaxCalculator() {
     </div>
   );
 }
-
