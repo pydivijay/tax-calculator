@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { FaInfoCircle } from "react-icons/fa"; // Info icon
+import { motion } from "framer-motion";
 
 export default function TaxCalculator() {
   const [income, setIncome] = useState({
@@ -12,7 +14,42 @@ export default function TaxCalculator() {
   });
   const [tax, setTax] = useState(0);
   const [details, setDetails] = useState(null);
+  const [showInfo, setShowInfo] = useState(false); // Toggle info panel
 
+  const usageGuide = `
+New Tax Regime Calculator Usage Guide (FY 2025-26):
+
+1. Income Sources:
+   - Salary Income: Enter your annual salary in rupees (e.g., 1200000 for ₹12,00,000).
+   - Interest: Income from savings, FDs, etc.
+   - Rental: Income from rented properties.
+   - Other: Any additional income.
+
+2. Standard Deduction:
+   - Automatically applies ₹75,000 deduction to total income.
+
+3. Tax Slabs (New Regime):
+   - ₹0 – ₹4,00,000: 0%
+   - ₹4,00,001 – ₹8,00,000: 5%
+   - ₹8,00,001 – ₹12,00,000: 10%
+   - ₹12,00,001 – ₹16,00,000: 15%
+   - ₹16,00,001 – ₹20,00,000: 20%
+   - ₹20,00,001 – ₹24,00,000: 25%
+   - Above ₹24,00,000: 30%
+
+4. Rebate & Marginal Relief:
+   - Total income ≤ ₹12,75,000: No tax (full rebate).
+   - Income > ₹12,75,000: Tax limited to excess over ₹12,75,000 (before cess).
+
+5. Cess:
+   - 4% Health & Education Cess added to final tax.
+
+6. Results:
+   - Displays total income, taxable income, computed tax, cess, and final tax payable.
+   - Test marginal relief with salary ≥ ₹1,276,000.
+
+Note: Tax may vary based on additional exemptions not included here.
+  `;
   const STANDARD_DEDUCTION = 75000;
   // Total income up to ₹12,75,000 is effectively tax-free for eligible individuals.
   const REBATE_LIMIT = 1275000;
@@ -84,11 +121,34 @@ export default function TaxCalculator() {
       cess,
     });
   };
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.2 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" },
+    },
+  };
+
+  const buttonVariants = {
+    hover: { scale: 1.05, transition: { duration: 0.2 } },
+    tap: { scale: 0.95 },
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-r from-sky-300 to-sky-700 text-white">
       <div className="bg-white shadow-2xl rounded-lg p-8 w-full max-w-2xl border border-gray-300 text-gray-800">
-      <div className="flex justify-center">
+        <div className="flex justify-center">
           <Image
             src="/VijayLogo.jpg"
             alt="Vijay Kumar Pydi Logo"
@@ -97,9 +157,55 @@ export default function TaxCalculator() {
             className="rounded-full"
           />
         </div>
-        <h1 className="text-4xl font-bold text-center mb-6 text-sky-700">
-          New Tax Regime Calculator
-        </h1>
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-col items-center relative mb-6"
+        >
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-sky-700 text-center">
+              New Tax Regime Calculator
+            </h1>
+            <FaInfoCircle
+              className="text-sky-400 cursor-pointer text-xl md:text-2xl"
+              onClick={() => setShowInfo(!showInfo)}
+            />
+          </div>
+          <p className="text-sm text-purple-600 mt-1 text-center">
+            FY 2025–26 (New Tax Regime)
+          </p>
+        </motion.div>
+
+        {showInfo && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-40 z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="relative bg-white rounded-2xl shadow-2xl border border-sky-300 w-full max-w-lg max-h-[80vh] overflow-y-auto p-6"
+            >
+              <button
+                className="absolute top-3 right-4 text-sky-700 font-bold text-xl hover:text-red-500 transition"
+                onClick={() => setShowInfo(false)}
+              >
+                ×
+              </button>
+              <h3 className="text-2xl font-bold mb-4 text-sky-700 text-center">
+                Usage Guide
+              </h3>
+              <pre className="whitespace-pre-wrap text-sm text-purple-700 leading-relaxed">
+                {usageGuide}
+              </pre>
+            </motion.div>
+          </motion.div>
+        )}
+
         <div className="grid grid-cols-2 gap-6">
           {Object.keys(income).map((key) => (
             <div key={key} className="flex flex-col">
@@ -144,16 +250,16 @@ export default function TaxCalculator() {
               <p className="font-medium">Taxable Income:</p>{" "}
               <p>₹{details.taxableIncome}</p>
               <p className="font-medium">Computed Tax (Without Relief):</p>{" "}
-              <p>₹{details.computedTax}</p>
+              <p>₹{details.computedTax.toFixed(2)}</p>
               <p className="font-medium">
                 Tax Before Cess (After Marginal Relief):
               </p>{" "}
-              <p>₹{details.finalTaxBeforeCess}</p>
+              <p>₹{details.finalTaxBeforeCess.toFixed(2)}</p>
               <p className="font-medium">Health & Education Cess:</p>{" "}
               <p>₹{details.cess}</p>
               <p className="font-medium">Tax Payable (With Cess):</p>{" "}
               <p className="text-red-500 font-semibold">
-                ₹{details.taxPayable}
+                ₹{details.taxPayable.toFixed(2)}
               </p>
             </div>
           </div>
